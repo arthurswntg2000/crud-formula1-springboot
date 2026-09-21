@@ -1,8 +1,8 @@
-# 🏎️ F1 CRUD API - Spring Boot & PostgreSQL
+# F1 CRUD API - Spring Boot & PostgreSQL
 
 API RESTful desenvolvida em Java utilizando Spring Boot para gestão de escuderias e carros de Fórmula 1.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Java 21**
 - **Spring Boot 3**
@@ -11,7 +11,7 @@ API RESTful desenvolvida em Java utilizando Spring Boot para gestão de escuderi
 - **Lombok**
 - **Maven**
 
-## 📌 Endpoints da API
+## Endpoints da API
 
 ### Escuderias (`/api/escuderias`)
 - `GET /api/escuderias` - Lista todas as escuderias e respetivos carros
@@ -27,7 +27,7 @@ API RESTful desenvolvida em Java utilizando Spring Boot para gestão de escuderi
 - `PUT /api/carros/{id}` - Atualiza os dados de um carro
 - `DELETE /api/carros/{id}` - Remove um carro
 
-## ⚙️ Como Executar o Projeto Localmente
+## Como Executar o Projeto Localmente
 
 1. Clonar o repositório:
    ```bash
