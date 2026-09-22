@@ -42,6 +42,11 @@ public class CarroService {
 
     }
 
+    // criado (22/09/2026)
+    public List<Carro> buscarPorAnoMaiorOuIgual(Integer ano) {
+        return carroRepository.buscarPorAnoMaiorOuIgual(ano);
+    }
+
     public Carro salvar(Carro carro, Long escuderiaId) {
         Escuderia escuderia = escuderiaRepository.findById(escuderiaId)
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada para o ID: " + escuderiaId));  // Criado (22/09/2026)

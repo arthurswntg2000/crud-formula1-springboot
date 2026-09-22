@@ -40,6 +40,12 @@ public class CarroController {
         return ResponseEntity.ok(service.buscarPorNomeEscuderia(nome));
     }
 
+    // criado (22/09/2026)
+    @GetMapping("/buscar-por-ano")
+    public ResponseEntity<List<Carro>> buscarPorAnoMaiorOuIgual(@RequestParam Integer ano) {
+        return ResponseEntity.ok(service.buscarPorAnoMaiorOuIgual(ano));
+    }
+
     @PostMapping("/escuderia/{escuderiaId}")
     public ResponseEntity<Carro> criar(@RequestBody Carro carro, @PathVariable Long escuderiaId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(carro, escuderiaId));
