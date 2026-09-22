@@ -42,8 +42,8 @@ public class CarroController {
 
     // criado (22/09/2026)
     @GetMapping("/buscar-por-ano")
-    public ResponseEntity<List<Carro>> buscarPorAnoMaiorOuIgual(@RequestParam Integer ano) {
-        return ResponseEntity.ok(service.buscarPorAnoMaiorOuIgual(ano));
+    public ResponseEntity<List<Carro>> buscarPorAno(@RequestParam Integer ano) {
+        return ResponseEntity.ok(service.buscarPorAno(ano));
     }
 
     // criado (22/09/2026)

@@ -20,8 +20,8 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
     List<Carro> buscarPorNomeEscuderia(@Param("nomeEscuderia") String nomeEscuderia);
 
     // Busca carros pelo ano de fabricação
-    @Query("SELECT c FROM Carro c WHERE c.ano >= :ano")
-    List<Carro> buscarPorAnoMaiorOuIgual(@Param("ano") Integer ano);
+    @Query("SELECT c FROM Carro c WHERE c.ano = :ano")
+    List<Carro> buscarPorAno(@Param("ano") Integer ano);
 
     // Busca carros pelo motor
     @Query("SELECT c FROM Carro c WHERE LOWER(c.motor) LIKE LOWER(CONCAT('%', :motor, '%'))")

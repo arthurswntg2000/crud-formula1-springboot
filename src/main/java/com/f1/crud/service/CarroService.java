@@ -32,24 +32,38 @@ public class CarroService {
 
     // criado (22/09/2026)
     public List<Carro> buscarPorModelo(String modelo) {
-        return carroRepository.buscarPorModelo(modelo);
-
+        List<Carro> carros = carroRepository.buscarPorModelo(modelo);
+        if (carros.isEmpty()) {
+            throw new NotFoundException("Nenhum carro encontrado pelo modelo informado: " + modelo);
+        }
+        return carros;
     }
 
     // criado (22/09/2026)
     public List<Carro> buscarPorNomeEscuderia(String nomeEscuderia) {
-        return carroRepository.buscarPorNomeEscuderia(nomeEscuderia);
-
+        List<Carro> carros = carroRepository.buscarPorNomeEscuderia(nomeEscuderia);
+        if (carros.isEmpty()) {
+            throw new NotFoundException("Nenhum carro encontrado para a escuderia informada: " + nomeEscuderia);
+        }
+        return carros;
     }
 
     // criado (22/09/2026)
-    public List<Carro> buscarPorAnoMaiorOuIgual(Integer ano) {
-        return carroRepository.buscarPorAnoMaiorOuIgual(ano);
+    public List<Carro> buscarPorAno(Integer ano) {
+        List<Carro> carros = carroRepository.buscarPorAno(ano);
+        if (carros.isEmpty()) {
+            throw new NotFoundException("Nenhum carro encontrado pelo ano de " + ano);
+        }
+        return carros;
     }
 
     // criado (22/09/2026)
     public List<Carro> buscarPorMotor(String motor) {
-        return carroRepository.buscarPorMotor(motor);
+        List<Carro> carros = carroRepository.buscarPorMotor(motor);
+        if (carros.isEmpty()) {
+            throw new NotFoundException("Nenhum carro encontrado pelo motor informado: " + motor);
+        }
+        return carros;
     }
 
     public Carro salvar(Carro carro, Long escuderiaId) {
