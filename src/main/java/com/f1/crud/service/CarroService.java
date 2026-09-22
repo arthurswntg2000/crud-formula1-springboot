@@ -2,6 +2,7 @@ package com.f1.crud.service;
 
 import com.f1.crud.domain.Carro;
 import com.f1.crud.domain.Escuderia;
+import com.f1.crud.exception.NotFoundException;  // Criado (22/09/2026)
 import com.f1.crud.repository.CarroRepository;
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,11 @@ public class CarroService {
 
     public Carro buscarPorId(Long id) {
         return carroRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carro não encontrado com o ID: " + id));
-    }
+                .orElseThrow(() -> new NotFoundException("Carro não encontrado para o ID: " + id));  // Criado (22/09/2026)
 
     public Carro salvar(Carro carro, Long escuderiaId) {
         Escuderia escuderia = escuderiaRepository.findById(escuderiaId)
-                .orElseThrow(() -> new RuntimeException("Escuderia não encontrada com o ID: " + escuderiaId));
+                .orElseThrow(() -> new NotFoundException("Escuderia não encontrada para o ID: " + escuderiaId));  // Criado (22/09/2026)
         carro.setEscuderia(escuderia);
         return carroRepository.save(carro);
     }

@@ -1,6 +1,7 @@
 package com.f1.crud.service;
 
 import com.f1.crud.domain.Escuderia;
+import com.f1.crud.exception.NotFoundException; //criado hoje
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class EscuderiaService {
 
     public Escuderia buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Escuderia não encontrada com o ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Escuderia não encontrada para o ID: " + id));
     }
 
     public Escuderia salvar(Escuderia escuderia) {
