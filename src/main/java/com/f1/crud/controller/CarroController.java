@@ -28,6 +28,18 @@ public class CarroController {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
+    // criado (22/09/2026)
+    @GetMapping("/buscar-por-modelo")
+    public ResponseEntity<List<Carro>> buscarPorModelo(@RequestParam String modelo) {
+        return ResponseEntity.ok(service.buscarPorModelo(modelo));
+    }
+
+    // criado (22/09/2026)
+    @GetMapping("/buscar-por-escuderia")
+    public ResponseEntity<List<Carro>> buscarPorEscuderia(@RequestParam String nome) {
+        return ResponseEntity.ok(service.buscarPorNomeEscuderia(nome));
+    }
+
     @PostMapping("/escuderia/{escuderiaId}")
     public ResponseEntity<Carro> criar(@RequestBody Carro carro, @PathVariable Long escuderiaId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(carro, escuderiaId));
