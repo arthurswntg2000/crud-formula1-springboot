@@ -1,7 +1,7 @@
 package com.f1.crud.service;
 
 import com.f1.crud.domain.Escuderia;
-import com.f1.crud.exception.NotFoundException; //criado hoje
+import com.f1.crud.exception.NotFoundException; // Criado (22/09/2026)
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.stereotype.Service;
 

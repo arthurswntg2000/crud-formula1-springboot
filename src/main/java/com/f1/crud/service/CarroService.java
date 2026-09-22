@@ -28,6 +28,8 @@ public class CarroService {
         return carroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Carro não encontrado para o ID: " + id));  // Criado (22/09/2026)
 
+    }
+
     public Carro salvar(Carro carro, Long escuderiaId) {
         Escuderia escuderia = escuderiaRepository.findById(escuderiaId)
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada para o ID: " + escuderiaId));  // Criado (22/09/2026)
