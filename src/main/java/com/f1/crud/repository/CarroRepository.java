@@ -11,16 +11,21 @@ import java.util.List;
 @Repository
 public interface CarroRepository extends JpaRepository<Carro, Long> {
 
-    // JPQL: Buscar carros por parte do nome do modelo (ignorando maiúsculas/minúsculas)
+    // Busca carros pelo nome do modelo (ignorando maiúsculas e minúsculas)
     @Query("SELECT c FROM Carro c WHERE LOWER(c.modelo) LIKE LOWER(CONCAT('%', :modelo, '%'))")
     List<Carro> buscarPorModelo(@Param("modelo") String modelo);
 
-    // JPQL: Buscar carros pelo nome da escuderia associada
+    // Busca carros pelo nome da escuderia
     @Query("SELECT c FROM Carro c WHERE LOWER(c.escuderia.nome) LIKE LOWER(CONCAT('%', :nomeEscuderia, '%'))")
     List<Carro> buscarPorNomeEscuderia(@Param("nomeEscuderia") String nomeEscuderia);
 
+    // Busca carros pelo ano de fabricação
     @Query("SELECT c FROM Carro c WHERE c.ano >= :ano")
     List<Carro> buscarPorAnoMaiorOuIgual(@Param("ano") Integer ano);
+
+    // Busca carros pelo motor
+    @Query("SELECT c FROM Carro c WHERE LOWER(c.motor) LIKE LOWER(CONCAT('%', :motor, '%'))")
+    List<Carro> buscarPorMotor(@Param("motor") String motor);
 }
 
 
