@@ -1,31 +1,31 @@
 package com.f1.crud.repository;     // criado (22/09/2026)
 
 import com.f1.crud.domain.Carro;
+import org.springframework.data.domain.Page;    // criado (23/09/2026)
+import org.springframework.data.domain.Pageable;    // criado (23/09/2026)
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface CarroRepository extends JpaRepository<Carro, Long> {
 
-    // Busca carros pelo nome do modelo (ignorando maiúsculas e minúsculas)
+    // Busca paginada por modelo;       Atualizado (23/09/2026)
     @Query("SELECT c FROM Carro c WHERE LOWER(c.modelo) LIKE LOWER(CONCAT('%', :modelo, '%'))")
-    List<Carro> buscarPorModelo(@Param("modelo") String modelo);
+    Page<Carro> buscarPorModelo(@Param("modelo") String modelo, Pageable pageable);
 
-    // Busca carros pelo nome da escuderia
+    // Busca paginada por escuderia     Atualizado (23/09/2026)
     @Query("SELECT c FROM Carro c WHERE LOWER(c.escuderia.nome) LIKE LOWER(CONCAT('%', :nomeEscuderia, '%'))")
-    List<Carro> buscarPorNomeEscuderia(@Param("nomeEscuderia") String nomeEscuderia);
+    Page<Carro> buscarPorNomeEscuderia(@Param("nomeEscuderia") String nomeEscuderia, Pageable pageable);
 
-    // Busca carros pelo ano de fabricação
+    // Busca paginada por ano exato     Atualizado (23/09/2026)
     @Query("SELECT c FROM Carro c WHERE c.ano = :ano")
-    List<Carro> buscarPorAno(@Param("ano") Integer ano);
+    Page<Carro> buscarPorAno(@Param("ano") Integer ano, Pageable pageable);
 
-    // Busca carros pelo motor
+    // Busca paginada por motor     Atualizado (23/09/2026)
     @Query("SELECT c FROM Carro c WHERE LOWER(c.motor) LIKE LOWER(CONCAT('%', :motor, '%'))")
-    List<Carro> buscarPorMotor(@Param("motor") String motor);
+    Page<Carro> buscarPorMotor(@Param("motor") String motor, Pageable pageable);
 }
 
 

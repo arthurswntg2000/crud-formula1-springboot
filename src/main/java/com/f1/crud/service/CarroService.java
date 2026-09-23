@@ -6,9 +6,9 @@ import com.f1.crud.DTO.CarroDTO;    // criado (23/09/2026)
 import com.f1.crud.exception.NotFoundException;  // Criado (22/09/2026)
 import com.f1.crud.repository.CarroRepository;
 import com.f1.crud.repository.EscuderiaRepository;
+import org.springframework.data.domain.Page;        // criado (23/09/2026)
+import org.springframework.data.domain.Pageable;        // criado (23/09/2026)
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CarroService {
@@ -21,8 +21,9 @@ public class CarroService {
         this.escuderiaRepository = escuderiaRepository;
     }
 
-    public List<CarroDTO> listarTodos() {
-        return carroRepository.findAll().stream().map(CarroDTO::new).toList();  //Atualizado dia (23/09/2026)
+    // Atualizado (23/09/2026)
+    public Page<CarroDTO> listarTodos(Pageable pageable) {
+        return carroRepository.findAll(pageable).map(CarroDTO::new);
     }
 
     public CarroDTO buscarPorId(Long id) {
@@ -32,39 +33,39 @@ public class CarroService {
     }
 
     // criado (22/09/2026);     Atualizado (23/09/2026)
-    public List<CarroDTO> buscarPorModelo(String modelo) {
-        List<Carro> carros = carroRepository.buscarPorModelo(modelo);
+    public Page<CarroDTO> buscarPorModelo(String modelo, Pageable pageable) {
+        Page<Carro> carros = carroRepository.buscarPorModelo(modelo, pageable);
         if (carros.isEmpty()) {
-            throw new NotFoundException("Nenhum carro encontrado pelo modelo informado: " + modelo);
+            throw new NotFoundException("Nenhum carro encontrado para o modelo informado: " + modelo);
         }
-        return carros.stream().map(CarroDTO::new).toList();
+        return carros.map(CarroDTO::new);
     }
 
     // criado (22/09/2026);     Atualizado (23/09/2026)
-    public List<CarroDTO> buscarPorNomeEscuderia(String nomeEscuderia) {
-        List<Carro> carros = carroRepository.buscarPorNomeEscuderia(nomeEscuderia);
+    public Page<CarroDTO> buscarPorNomeEscuderia(String nomeEscuderia, Pageable pageable) {
+        Page<Carro> carros = carroRepository.buscarPorNomeEscuderia(nomeEscuderia, pageable);
         if (carros.isEmpty()) {
             throw new NotFoundException("Nenhum carro encontrado para a escuderia informada: " + nomeEscuderia);
         }
-        return carros.stream().map(CarroDTO::new).toList();
+        return carros.map(CarroDTO::new);
     }
 
     // criado (22/09/2026);     Atualizado (23/09/2026)
-    public List<CarroDTO> buscarPorAno(Integer ano) {
-        List<Carro> carros = carroRepository.buscarPorAno(ano);
+    public Page<CarroDTO> buscarPorAno(Integer ano, Pageable pageable) {
+        Page<Carro> carros = carroRepository.buscarPorAno(ano, pageable);
         if (carros.isEmpty()) {
-            throw new NotFoundException("Nenhum carro encontrado pelo ano de " + ano);
+            throw new NotFoundException("Nenhum carro encontrado para o ano informado: " + ano);
         }
-        return carros.stream().map(CarroDTO::new).toList();
+        return carros.map(CarroDTO::new);
     }
 
     // criado (22/09/2026);     Atualizado (23/09/2026)
-    public List<CarroDTO> buscarPorMotor(String motor) {
-        List<Carro> carros = carroRepository.buscarPorMotor(motor);
+    public Page<CarroDTO> buscarPorMotor(String motor, Pageable pageable) {
+        Page<Carro> carros = carroRepository.buscarPorMotor(motor, pageable);
         if (carros.isEmpty()) {
-            throw new NotFoundException("Nenhum carro encontrado pelo motor informado: " + motor);
+            throw new NotFoundException("Nenhum carro encontrado para o motor informado: " + motor);
         }
-        return carros.stream().map(CarroDTO::new).toList();
+        return carros.map(CarroDTO::new);
     }
 
     // Atualizado (23/09/2026)
