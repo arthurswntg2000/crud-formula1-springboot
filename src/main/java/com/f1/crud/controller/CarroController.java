@@ -1,6 +1,7 @@
 package com.f1.crud.controller;
 
 import com.f1.crud.domain.Carro;
+import com.f1.crud.DTO.CarroDTO;    // criado (23/09/2026)
 import com.f1.crud.service.CarroService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,47 +19,51 @@ public class CarroController {
         this.service = service;
     }
 
+    // Atualizado em (23/09/2026)
     @GetMapping
-    public ResponseEntity<List<Carro>> listar() {
+    public ResponseEntity<List<CarroDTO>> listarTodos() {
         return ResponseEntity.ok(service.listarTodos());
     }
 
+    // Atualizado em (23/09/2026)
     @GetMapping("/{id}")
-    public ResponseEntity<Carro> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<CarroDTO> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // criado (22/09/2026)
+    // criado (22/09/2026); // Atualizado em (23/09/2026)
     @GetMapping("/buscar-por-modelo")
-    public ResponseEntity<List<Carro>> buscarPorModelo(@RequestParam String modelo) {
+    public ResponseEntity<List<CarroDTO>> buscarPorModelo(@RequestParam String modelo) {
         return ResponseEntity.ok(service.buscarPorModelo(modelo));
     }
 
-    // criado (22/09/2026)
+    // criado (22/09/2026); // Atualizado em (23/09/2026)
     @GetMapping("/buscar-por-escuderia")
-    public ResponseEntity<List<Carro>> buscarPorEscuderia(@RequestParam String nome) {
+    public ResponseEntity<List<CarroDTO>> buscarPorNomeEscuderia(@RequestParam String nome) {
         return ResponseEntity.ok(service.buscarPorNomeEscuderia(nome));
     }
 
-    // criado (22/09/2026)
+    // criado (22/09/2026); // Atualizado em (23/09/2026)
     @GetMapping("/buscar-por-ano")
-    public ResponseEntity<List<Carro>> buscarPorAno(@RequestParam Integer ano) {
+    public ResponseEntity<List<CarroDTO>> buscarPorAno(@RequestParam Integer ano) {
         return ResponseEntity.ok(service.buscarPorAno(ano));
     }
 
-    // criado (22/09/2026)
+    // criado (22/09/2026); // Atualizado em (23/09/2026)
     @GetMapping("/buscar-por-motor")
-    public ResponseEntity<List<Carro>> buscarPorMotor(@RequestParam String motor) {
+    public ResponseEntity<List<CarroDTO>> buscarPorMotor(@RequestParam String motor) {
         return ResponseEntity.ok(service.buscarPorMotor(motor));
     }
 
-    @PostMapping("/escuderia/{escuderiaId}")
-    public ResponseEntity<Carro> criar(@RequestBody Carro carro, @PathVariable Long escuderiaId) {
+    // Atualizado em (23/09/2026)
+    @PostMapping("/escuderia/{escuderiaId}") 
+    public ResponseEntity<CarroDTO> salvar(@RequestBody Carro carro, @PathVariable Long escuderiaId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(carro, escuderiaId));
     }
 
+    // Atualizado em (23/09/2026)
     @PutMapping("/{id}")
-    public ResponseEntity<Carro> atualizar(@PathVariable Long id, @RequestBody Carro carro) {
+    public ResponseEntity<CarroDTO> atualizar(@PathVariable Long id, @RequestBody Carro carro) {
         return ResponseEntity.ok(service.atualizar(id, carro));
     }
 
