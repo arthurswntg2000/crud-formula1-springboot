@@ -1,11 +1,13 @@
 package com.f1.crud.service;
 
 import com.f1.crud.domain.Escuderia;
-import com.f1.crud.exception.NotFoundException; // Criado (22/09/2026)
+import com.f1.crud.dto.EscuderiaDTO;
+import com.f1.crud.exception.NotFoundException;     // Criado (22/09/2026)
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EscuderiaService {
@@ -16,8 +18,10 @@ public class EscuderiaService {
         this.repository = repository;
     }
 
-    public List<Escuderia> listarTodas() {
-        return repository.findAll();
+    public List<EscuderiaDTO> listarTodas() {
+        return repository.findAll().stream()
+                .map(EscuderiaDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Escuderia buscarPorId(Long id) {

@@ -1,7 +1,7 @@
 package com.f1.crud.controller;
 
 import com.f1.crud.domain.Carro;
-import com.f1.crud.DTO.CarroDTO;    // criado (23/09/2026)
+import com.f1.crud.dto.CarroDTO;
 import com.f1.crud.service.CarroService;
 import org.springframework.data.domain.Page;    // criado (23/09/2026)
 import org.springframework.data.domain.Pageable;    // criado (23/09/2026)

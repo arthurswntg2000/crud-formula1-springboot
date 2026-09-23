@@ -1,4 +1,4 @@
-package com.f1.crud.DTO;       // Criado (23/09/2026)
+package com.f1.crud.dto;       // Criado (23/09/2026)
 
 import com.f1.crud.domain.Carro;
 import lombok.AllArgsConstructor;
