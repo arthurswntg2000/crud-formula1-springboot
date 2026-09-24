@@ -1,7 +1,7 @@
 package com.f1.crud.service;
 
 import com.f1.crud.domain.Escuderia;
-import com.f1.crud.dto.EscuderiaDTO;
+import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.exception.NotFoundException;     // Criado (22/09/2026)
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.stereotype.Service;
@@ -18,9 +18,9 @@ public class EscuderiaService {
         this.repository = repository;
     }
 
-    public List<EscuderiaDTO> listarTodas() {
+    public List<EscuderiaRequestDTO> listarTodas() {
         return repository.findAll().stream()
-                .map(EscuderiaDTO::new)
+                .map(EscuderiaRequestDTO::new)
                 .collect(Collectors.toList());
     }
 

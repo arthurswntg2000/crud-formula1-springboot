@@ -1,6 +1,7 @@
 package com.f1.crud.controller;
 
 import com.f1.crud.domain.Escuderia;
+import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.service.EscuderiaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EscuderiaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Escuderia>> listar() {
+    public ResponseEntity<List<EscuderiaRequestDTO>> listarTodas() {
         return ResponseEntity.ok(service.listarTodas());
     }
 
