@@ -25,7 +25,7 @@ public interface PilotoMapper extends GenericMapper<Piloto, PilotoRequestDTO, Pi
 
     @Override
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "escuderia", ignore = true)
+    @Mapping(target = "escuderias", ignore = true)
     Piloto toEntity(PilotoRequestDTO dto);
 
     @Named("mapearNomesEscuderias")

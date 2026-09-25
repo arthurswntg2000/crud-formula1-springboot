@@ -57,6 +57,14 @@ public class CarroService {
         return carroRepository.findAll(pageable).map(carroMapper::toDto);
     }
 
+    // criado (25/09/2026)
+    @Transactional(readOnly = true)
+    public CarroResponseDTO buscarPorId(Long id) {
+        Carro carro = carroRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Carro não encontrado com ID: " + id));
+        return carroMapper.toDto(carro);
+    }
+
     // --- Buscas customizadas paginadas ---
 
     // criado (22/09/2026);     Atualizado (24/09/2026)

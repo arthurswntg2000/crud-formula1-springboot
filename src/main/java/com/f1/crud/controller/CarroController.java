@@ -22,7 +22,7 @@ public class CarroController {
 
     // Atualizado em (24/09/2026)
     @GetMapping
-    public ResponseEntity<Page<CarroRequestDTO>> listarTodos(Pageable pageable) {
+    public ResponseEntity<Page<CarroResponseDTO>> listarTodos(Pageable pageable) {
         return ResponseEntity.ok(service.listarPaginado(pageable));
     }
 

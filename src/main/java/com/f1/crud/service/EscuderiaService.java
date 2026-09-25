@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class EscuderiaService {
 
-    private final EscuderiaRepository repository;
+    private final EscuderiaRepository escuderiaRepository;
     private final EscuderiaMapper escuderiaMapper;
 
     public EscuderiaService(EscuderiaRepository escuderiaRepository, EscuderiaMapper escuderiaMapper) {
