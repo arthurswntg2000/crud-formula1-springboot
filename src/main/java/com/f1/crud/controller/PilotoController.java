@@ -43,6 +43,13 @@ public class PilotoController {
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
+    @PutMapping("/{pilotoId}/escuderias/{escuderiaId}")
+    public ResponseEntity<PilotoResponseDTO> adicionarEscuderia(
+        @PathVariable Long pilotoId, 
+        @PathVariable Long escuderiaId) {
+    return ResponseEntity.ok(service.adicionarEscuderia(pilotoId, escuderiaId));
+}
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);

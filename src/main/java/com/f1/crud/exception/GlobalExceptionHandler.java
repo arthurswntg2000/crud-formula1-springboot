@@ -1,4 +1,4 @@
-// Criado (22/09/2026)      // Atualizado (24/09/2026)
+// Criado (22/09/2026)      // Atualizado (25/09/2026)
 package com.f1.crud.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Trata recurso não encontrado (HTTP 404)
+    // Trata recurso não encontrado do sistema (HTTP 404)
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErroPadrao> notFound(NotFoundException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
@@ -27,6 +28,23 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         
+        return ResponseEntity.status(status).body(err);
+    }
+
+    // Criado (25/09/2026)
+    // Trata URLs ou ficheiros estáticos inexistentes (HTTP 404)
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErroPadrao> noResourceFound(NoResourceFoundException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ErroPadrao err = new ErroPadrao(
+                Instant.now(),
+                status.value(),
+                "Recurso não encontrado",
+                "O caminho especificado não existe na API.",
+                request.getRequestURI()
+        );
+
         return ResponseEntity.status(status).body(err);
     }
 
@@ -69,4 +87,4 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
-}   
+}
