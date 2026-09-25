@@ -3,17 +3,20 @@ package com.f1.crud.service;    // Criado (23/09/2026)
 import com.f1.crud.repository.PilotoRepository;
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.domain.Piloto;
-import com.f1.crud.dto.PilotoRequestDTO;
-import org.hibernate.Hibernate;     // Atualizado (24/09/2026)
+import com.f1.crud.dto.PilotoRequestDTO;    // criado (24/09/2026)
+import com.f1.crud.dto.PilotoResponseDTO;   // criado (24/09/2026)
 import com.f1.crud.exception.NotFoundException;
+import com.f1.crud.mapper.PilotoMapper;     // criado (24/09/2026)
 import com.f1.crud.repository.EscuderiaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
+
 @Service
-@Transactional
 
 // Mudar PilotoService para PilotoServiceImpl
 // Criar a interface do Service
@@ -21,37 +24,77 @@ public class PilotoService {
 
     private final PilotoRepository pilotoRepository;
     private final EscuderiaRepository escuderiaRepository;
+    private final PilotoMapper pilotoMapper;
 
-    public PilotoService(PilotoRepository pilotoRepository, EscuderiaRepository escuderiaRepository) {
+
+    public PilotoService(PilotoRepository pilotoRepository, EscuderiaRepository escuderiaRepository, PilotoMapper pilotoMapper) {
         this.pilotoRepository = pilotoRepository;
         this.escuderiaRepository = escuderiaRepository;
+        this.pilotoMapper = pilotoMapper;
     }
 
     // Criado (24/09/2026)
+    @Transactional
+    public PilotoResponseDTO criar(PilotoRequestDTO dto) {
+        Piloto piloto = pilotoMapper.toEntity(dto);
+
+        if (dto.escuderiasIds() != null && !dto.escuderiasIds().isEmpty()) {
+            List<Escuderia> escuderias = escuderiaRepository.findAllById(dto.escuderiasIds());
+            piloto.setEscuderias(new HashSet<>(escuderias));
+        }
+
+        Piloto salvo = pilotoRepository.save(piloto);
+        return pilotoMapper.toDto(salvo);
+    }
+
     @Transactional(readOnly = true)
-    public Page<PilotoRequestDTO> listarTodos(Pageable pageable) {
-        return pilotoRepository.findAll(pageable).map(PilotoRequestDTO::new);
+    public List<PilotoResponseDTO> listarTodos() {
+        return pilotoMapper.toDtoList(pilotoRepository.findAll());
     }
 
-    public PilotoRequestDTO salvar(Piloto piloto) {
-        Piloto pilotoSalvo = pilotoRepository.save(piloto);
-        return new PilotoRequestDTO(pilotoSalvo);
+    @Transactional(readOnly = true)
+    public Page<PilotoResponseDTO> listarPaginado(Pageable pageable) {
+        return pilotoRepository.findAll(pageable).map(pilotoMapper::toDto);
     }
 
-    // Vincula um piloto a uma escuderia
-    public PilotoRequestDTO associarEscuderia(Long pilotoId, Long escuderiaId) {
-        Piloto piloto = pilotoRepository.findById(pilotoId)
-                .orElseThrow(() -> new NotFoundException("Piloto não encontrado pelo ID: " + pilotoId));
-        
-        Escuderia escuderia = escuderiaRepository.findById(escuderiaId)
-                .orElseThrow(() -> new NotFoundException("Escuderia não encontrada pelo ID: " + escuderiaId));
+    @Transactional(readOnly = true)
+    public PilotoResponseDTO buscarPorId(Long id) {
+        Piloto piloto = pilotoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id));
+        return pilotoMapper.toDto(piloto);
+    }
 
-        piloto.getEscuderias().add(escuderia);
-        Piloto pilotoSalvo = pilotoRepository.save(piloto);     // Atualizado (24/09/2026)
+    @Transactional(readOnly = true)
+    public Page<PilotoResponseDTO> buscarPorNome(String nome, Pageable pageable) {
+        return pilotoRepository.buscarPorNome(nome, pageable).map(pilotoMapper::toDto);
+    }
 
-        // Força a carregar os dados proxy da coleção de escuderias
-        Hibernate.initialize(pilotoSalvo.getEscuderias());
+    @Transactional(readOnly = true)
+    public Page<PilotoResponseDTO> buscarPorNacionalidade(String nacionalidade, Pageable pageable) {
+        return pilotoRepository.buscarPorNacionalidade(nacionalidade, pageable).map(pilotoMapper::toDto);
+    }
 
-        return new PilotoRequestDTO(pilotoSalvo);
+    @Transactional
+    public PilotoResponseDTO atualizar(Long id, PilotoRequestDTO dto) {
+        Piloto pilotoExistente = pilotoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id));
+
+        pilotoMapper.updateEntityFromDto(dto, pilotoExistente);
+
+        if (dto.escuderiasIds() != null) {
+            List<Escuderia> escuderias = escuderiaRepository.findAllById(dto.escuderiasIds());
+            pilotoExistente.setEscuderias(new HashSet<>(escuderias));
+        }
+
+        Piloto atualizado = pilotoRepository.save(pilotoExistente);
+        return pilotoMapper.toDto(atualizado);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        if (!pilotoRepository.existsById(id)) {
+            throw new NotFoundException("Piloto não encontrado com ID: " + id);
+        }
+        pilotoRepository.deleteById(id);
     }
 }

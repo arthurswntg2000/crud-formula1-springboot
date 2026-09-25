@@ -2,6 +2,7 @@
 package com.f1.crud.mapper;
 
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface GenericMapper<E, REQ, RES> {
@@ -11,13 +12,18 @@ public interface GenericMapper<E, REQ, RES> {
 
     // Converte a Entidade para o DTO de saída (Response)
     RES toDto(E entity);
-
-    // Converte uma lista de Entidades para uma lista de DTOs de saída
+    
+    // Converte uma lista de Entidades para uma lista de DTOs de resposta
     List<RES> toDtoList(List<E> entityList);
 
     // Converte uma lista de DTOs de entrada para uma lista de Entidades
     List<E> toEntityList(List<REQ> dtoList);
 
-    // Atualiza os campos de uma Entidade existente com os dados de um DTO (operações de PUT/PATCH)
+    // Atualiza a instância existente da Entidade com dados do DTO de requisição
     void updateEntityFromDto(REQ dto, @MappingTarget E entity);
+
+    // Método utilitário para conversão de páginas do Spring Data
+    default Page<RES> toDtoPage(Page<E> entityPage) {
+        return entityPage.map(this::toDto);
+    }
 }

@@ -1,12 +1,13 @@
+// Criado (22/09/2026)      // Atualizado (24/09/2026)
 package com.f1.crud.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "carro")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Carro {
@@ -23,8 +24,7 @@ public class Carro {
     @Column(nullable = false)
     private Integer ano;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escuderia_id")
-    @JsonIgnoreProperties("carros")
     private Escuderia escuderia;
 }

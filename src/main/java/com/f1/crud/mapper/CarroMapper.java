@@ -17,7 +17,7 @@ public interface CarroMapper extends GenericMapper<Carro, CarroRequestDTO, Carro
     @Override
     @Mapping(source = "escuderia.nome", target = "nomeEscuderia")
     CarroResponseDTO toDto(Carro entity);
-
+    
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "escuderia", ignore = true)

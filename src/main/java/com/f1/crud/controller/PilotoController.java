@@ -1,7 +1,7 @@
 package com.f1.crud.controller;     // Criado (23/09/2026)
 
-import com.f1.crud.domain.Piloto;
-import com.f1.crud.dto.PilotoRequestDTO;
+import com.f1.crud.dto.PilotoRequestDTO;    // criado (24/09/2026)
+import com.f1.crud.dto.PilotoResponseDTO;   // criado (24/09/2026)
 import com.f1.crud.service.PilotoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,18 +19,33 @@ public class PilotoController {
         this.service = service;
     }
 
+    // Atualizado (24/09/2026)
     @GetMapping
-    public ResponseEntity<Page<PilotoRequestDTO>> listarTodos(Pageable pageable) {
-        return ResponseEntity.ok(service.listarTodos(pageable));
+    public ResponseEntity<Page<PilotoResponseDTO>> listarTodos(Pageable pageable) {
+        return ResponseEntity.ok(service.listarPaginado(pageable));
     }
 
+    // Atualizado (24/09/2026)
+    @GetMapping("/{id}")
+    public ResponseEntity<PilotoResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    // Atualizado (24/09/2026)
     @PostMapping
-    public ResponseEntity<PilotoRequestDTO> salvar(@RequestBody Piloto piloto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(piloto));
+    public ResponseEntity<PilotoResponseDTO> salvar(@RequestBody PilotoRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(dto));
     }
 
-    @PutMapping("/{pilotoId}/escuderias/{escuderiaId}")
-    public ResponseEntity<PilotoRequestDTO> associarEscuderia(@PathVariable Long pilotoId, @PathVariable Long escuderiaId) {
-        return ResponseEntity.ok(service.associarEscuderia(pilotoId, escuderiaId));
+    // Atualizado (24/09/2026)
+    @PutMapping("/{id}")
+    public ResponseEntity<PilotoResponseDTO> atualizar(@PathVariable Long id, @RequestBody PilotoRequestDTO dto) {
+        return ResponseEntity.ok(service.atualizar(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

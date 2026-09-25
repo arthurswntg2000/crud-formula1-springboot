@@ -1,15 +1,18 @@
+// criado (22/09/2026)  // Atualizado (24/09/2026)
 package com.f1.crud.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.*;    
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;   // Criado (23/09/2026)
+import java.util.Set;
 
 
 @Entity
 @Table(name = "escuderia")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Escuderia {
@@ -23,9 +26,8 @@ public class Escuderia {
 
     private String paisOrigem;
 
-    @OneToMany(mappedBy = "escuderia", cascade = CascadeType.ALL)
-    private List<Carro> carros;
-
+    @OneToMany(mappedBy = "escuderia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Carro> carros = new ArrayList<>();
 
     // Criado (23/09/2026)
     @ManyToMany(mappedBy = "escuderias")

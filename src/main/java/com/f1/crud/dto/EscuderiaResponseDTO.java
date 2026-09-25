@@ -4,6 +4,5 @@ package com.f1.crud.dto;
 public record EscuderiaResponseDTO(
     Long id,
     String nome,
-    String paisOrigem,
-    Integer anoFundacao
+    String paisOrigem
 ) {}
