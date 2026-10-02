@@ -1,17 +1,12 @@
-package com.f1.crud.exception;     // Criado (22/09/2026)
+// Criado (22/09/2026); // Atualizado (02/10/2026)
+package com.f1.crud.exception;
 
 import java.time.Instant;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ErroPadrao {
-    private Instant timestamp;
-    private Integer status;
-    private String error;
-    private String message;
-    private String path;
-}
+public record ErroPadrao(
+    Instant timestamp,
+    Integer status,
+    String error,
+    String message,
+    String path
+) {}

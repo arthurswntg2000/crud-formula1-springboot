@@ -1,7 +1,8 @@
-// Criado (22/09/2026)      // Atualizado (25/09/2026)
+// Criado (22/09/2026)      // Atualizado (02/10/2026)
 package com.f1.crud.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -68,6 +69,23 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         
+        return ResponseEntity.status(status).body(err);
+    }
+
+    // Criado (02/10/2026)
+    // Trata violações de integridade do banco de dados, ex: unique constraints (HTTP 400)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErroPadrao> dataIntegrityError(DataIntegrityViolationException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ErroPadrao err = new ErroPadrao(
+                Instant.now(),
+                status.value(),
+                "Erro de Integridade de Dados",
+                "Operação não permitida: registro duplicado ou com dependências vinculadas no banco de dados.",
+                request.getRequestURI()
+        );
+
         return ResponseEntity.status(status).body(err);
     }
 
