@@ -3,6 +3,7 @@ package com.f1.crud.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,14 @@ public class Piloto {
     private String nome;
     private String nacionalidade;
     private Integer numeroCarro;
+    private LocalDate dataNascimento;
+    private Integer titulos = 0;
+    private String status; // Ex: "EM ATIVIDADE", "APOSENTADO"[cite: 7, 10]
+
+    @Column(length = 2000)
+    private String biografia; // Biografia com limite amplo[cite: 8, 10]
+
+    private String urlFoto;
 
     @ManyToMany
     @JoinTable(

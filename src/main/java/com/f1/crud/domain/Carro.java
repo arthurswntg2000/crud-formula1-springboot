@@ -28,6 +28,11 @@ public class Carro {
     @Column(nullable = false)
     private Integer ano;
 
+    @Column(length = 2000)
+    private String fichaTecnica;
+
+    private String urlFoto;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escuderia_id")
     private Escuderia escuderia;

@@ -59,11 +59,14 @@ public class PilotoServiceImpl implements PilotoService {
         return pilotoRepository.findAll(pageable).map(pilotoMapper::toDto);
     }
 
+    // Atualizado (02/10/2026)
     @Override
     @Transactional(readOnly = true)
     public PilotoResponseDTO buscarPorId(Long id) {
-        Piloto piloto = pilotoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id));
+        // Tenta buscar com Join Fetch se existir no repositório ou pelo id padrão
+        Piloto piloto = pilotoRepository.findByIdWithEscuderias(id)
+                .orElseGet(() -> pilotoRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id)));
         return pilotoMapper.toDto(piloto);
     }
 

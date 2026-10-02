@@ -54,6 +54,13 @@ public class EscuderiaServiceImpl implements EscuderiaService {
         return escuderiaMapper.toDto(escuderia);
     }
 
+    // criado (02/10/2026)
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EscuderiaResponseDTO> buscarPorNome(String nome, Pageable pageable) {
+        return escuderiaRepository.buscarPorNome(nome, pageable).map(escuderiaMapper::toDto);
+    }
+
     @Override
     @Transactional
     public EscuderiaResponseDTO atualizar(Long id, EscuderiaRequestDTO dto) {

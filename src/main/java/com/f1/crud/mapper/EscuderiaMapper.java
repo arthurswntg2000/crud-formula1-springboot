@@ -1,25 +1,30 @@
-// Criado (24/09/2026)
+// Criado (24/09/2026); // Atualizado (02/10/2026)
 package com.f1.crud.mapper;
 
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.dto.EscuderiaResponseDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(
-    componentModel = "spring",
-    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
-)
-public interface EscuderiaMapper extends GenericMapper<Escuderia, EscuderiaRequestDTO, EscuderiaResponseDTO> {
+import java.util.List;
 
-    @Override
-    EscuderiaResponseDTO toDto(Escuderia entity);
+@Mapper(componentModel = "spring")
+public interface EscuderiaMapper {
 
-    @Override
+    // Criado (02/10/2026)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "carros", ignore = true)
+    @Mapping(target = "pilotos", ignore = true)
+    Escuderia toEntity(EscuderiaRequestDTO dto);
+
+    EscuderiaResponseDTO toDto(Escuderia escuderia);
+
+    List<EscuderiaResponseDTO> toDtoList(List<Escuderia> escuderias);
+
+
+    // Atualizado (02/10/2026)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pilotos", ignore = true)
     @Mapping(target = "carros", ignore = true)
-    Escuderia toEntity(EscuderiaRequestDTO dto);
+    void updateEntityFromDto(EscuderiaRequestDTO dto, @MappingTarget Escuderia escuderia);
 }

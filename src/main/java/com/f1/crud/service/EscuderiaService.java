@@ -1,4 +1,4 @@
-// Atualizado (25/09/2026)
+// Criado (22/09/2026); // Atualizado (25/09/2026); Atualizado (02/10/2026)
 package com.f1.crud.service;
 
 import com.f1.crud.dto.EscuderiaRequestDTO;
@@ -13,6 +13,7 @@ public interface EscuderiaService {
     List<EscuderiaResponseDTO> listarTodos();
     Page<EscuderiaResponseDTO> listarPaginado(Pageable pageable);
     EscuderiaResponseDTO buscarPorId(Long id);
+    Page<EscuderiaResponseDTO> buscarPorNome(String nome, Pageable pageable);
     EscuderiaResponseDTO atualizar(Long id, EscuderiaRequestDTO dto);
     void deletar(Long id);
 }

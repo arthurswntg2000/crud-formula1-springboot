@@ -2,7 +2,8 @@
 package com.f1.crud.domain;
 
 import jakarta.persistence.*;
-import lombok.*;    
+import lombok.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +24,15 @@ public class Escuderia {
 
     @Column(nullable = false, unique = true)
     private String nome;
-
     private String paisOrigem;
+    private LocalDate dataFundacao;
+    private String fundador;
+    private Integer titulos = 0;
+
+    @Column(length = 2000)
+    private String biografia;
+
+    private String urlLogo;
 
     @OneToMany(mappedBy = "escuderia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Carro> carros = new ArrayList<>();
