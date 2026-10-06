@@ -2,7 +2,6 @@
 package com.f1.crud.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -16,9 +15,8 @@ public record PilotoRequestDTO(
     Integer titulos,
     String status,
     
-    @Size(max = 2000, message = "A biografia deve ter no máximo 2000 caracteres") 
     String biografia,
     
     String urlFoto,
-    Set<Long> escuderiaIds
+    Set<Long> escuderiasIds
 ) {}

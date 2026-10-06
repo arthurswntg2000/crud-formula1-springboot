@@ -7,8 +7,6 @@ import com.f1.crud.dto.PilotoRequestDTO;
 import com.f1.crud.dto.PilotoResponseDTO;
 import org.mapstruct.*;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,8 +19,7 @@ public interface PilotoMapper {
     Piloto toEntity(PilotoRequestDTO dto);
 
     // Criado (02/10/2026)
-    @Mapping(target = "idade", expression = "java(calcularIdade(piloto.getDataNascimento()))")
-    @Mapping(target = "escuderiasIds", expression = "java(mapEscuderiasToIds(piloto.getEscuderias()))")
+    @Mapping(target = "nomesEscuderias", expression = "java(mapEscuderiasToNomes(piloto.getEscuderias()))")
     PilotoResponseDTO toDto(Piloto piloto);
 
     List<PilotoResponseDTO> toDtoList(List<Piloto> pilotos);
@@ -31,15 +28,9 @@ public interface PilotoMapper {
     @Mapping(target = "escuderias", ignore = true)
     void updateEntityFromDto(PilotoRequestDTO dto, @MappingTarget Piloto piloto);
 
-    // Criado (02/10/2026)
-    default Integer calcularIdade(LocalDate dataNascimento) {
-        if (dataNascimento == null) return null;
-        return Period.between(dataNascimento, LocalDate.now()).getYears();
-    }
-
-    // Atualizado (02/10/2026)
-    default Set<Long> mapEscuderiasToIds(Set<Escuderia> escuderias) {
+    // Atualizado (06/10/2026)
+    default Set<String> mapEscuderiasToNomes(Set<Escuderia> escuderias) {
         if (escuderias == null) return null;
-        return escuderias.stream().map(Escuderia::getId).collect(Collectors.toSet());
+        return escuderias.stream().map(Escuderia::getNome).collect(Collectors.toSet());
     }
 }

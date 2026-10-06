@@ -8,7 +8,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {EscuderiaMapper.class})
+@Mapper(componentModel = "spring")
 public interface CarroMapper {
 
     // Criado (02/10/2026)
@@ -17,7 +17,7 @@ public interface CarroMapper {
     @Mapping(target = "nomeEscuderia", ignore = true)
     Carro toEntity(CarroRequestDTO dto);
 
-    @Mapping(target = "escuderiaId", source = "escuderia.id")
+    @Mapping(target = "nomeEscuderia", source = "escuderia.nome")
     CarroResponseDTO toDto(Carro carro);
 
     List<CarroResponseDTO> toDtoList(List<Carro> carros);

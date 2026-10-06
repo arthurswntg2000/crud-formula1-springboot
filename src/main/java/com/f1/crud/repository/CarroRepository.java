@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -16,10 +18,20 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
 
     // Carrega o carro, sua escuderia e os pilotos dessa escuderia em 1 único SELECT
     @EntityGraph(attributePaths = {"escuderia", "escuderia.pilotos"})
-    Optional<Carro> findByIdWithEscuderiaEPilotos(Long id);
+    @Query("SELECT c FROM Carro c WHERE c.id = :id")
+    Optional<Carro> findByIdWithEscuderiaEPilotos(@Param("id") Long id);
 
-    // Busca paginada por modelo para a barra de busca da tela de Listagem
-    Page<Carro> findByModeloContainingIgnoreCase(String modelo, Pageable pageable);
+    @Query("SELECT c FROM Carro c WHERE LOWER(c.modelo) LIKE LOWER(CONCAT('%', :modelo, '%'))")
+    Page<Carro> buscarPorModelo(@Param("modelo") String modelo, Pageable pageable);
+
+    @Query("SELECT c FROM Carro c WHERE LOWER(c.escuderia.nome) LIKE LOWER(CONCAT('%', :nomeEscuderia, '%'))")
+    Page<Carro> buscarPorNomeEscuderia(@Param("nomeEscuderia") String nomeEscuderia, Pageable pageable);
+
+    @Query("SELECT c FROM Carro c WHERE c.ano = :ano")
+    Page<Carro> buscarPorAno(@Param("ano") Integer ano, Pageable pageable);
+
+    @Query("SELECT c FROM Carro c WHERE LOWER(c.motor) LIKE LOWER(CONCAT('%', :motor, '%'))")
+    Page<Carro> buscarPorMotor(@Param("motor") String motor, Pageable pageable);
 }
 
 
