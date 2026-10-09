@@ -5,6 +5,7 @@ import com.f1.crud.domain.Usuario;
 import com.f1.crud.dto.LoginDTO;
 import com.f1.crud.dto.RegistroDTO;
 import com.f1.crud.dto.TokenResponseDTO;
+import com.f1.crud.dto.UsuarioResponseDTO;
 import com.f1.crud.repository.UsuarioRepository;
 import com.f1.crud.security.TokenService;
 import jakarta.validation.Valid;
@@ -13,10 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -62,4 +66,15 @@ public class AutenticacaoController {
 
         return ResponseEntity.ok().build();
     }
+
+    // Criado (09/10/2026)
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
+        var usuarios = usuarioRepository.findAll()
+            .stream()
+            .map(UsuarioResponseDTO::new)
+            .toList();
+            
+        return ResponseEntity.ok(usuarios);
+}
 }
