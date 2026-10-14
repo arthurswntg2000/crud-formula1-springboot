@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pilotos")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PilotoController {
 
     private final PilotoService pilotoService;  // Atualizado (02/10/2026)

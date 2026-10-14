@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/carros")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CarroController {
 
     // Atualizado (02/10/2026)

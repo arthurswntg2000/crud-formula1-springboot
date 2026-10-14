@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/escuderias")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EscuderiaController {
 
     // Atualizado (02/10/2026)
