@@ -1,12 +1,14 @@
 // Atualizado (25/09/2026)
 package com.f1.crud.service.impl;
 
+import com.f1.crud.domain.Atividade;
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.domain.Piloto;
 import com.f1.crud.dto.PilotoRequestDTO;
 import com.f1.crud.dto.PilotoResponseDTO;
 import com.f1.crud.exception.NotFoundException;
 import com.f1.crud.mapper.PilotoMapper;
+import com.f1.crud.repository.AtividadeRepository;
 import com.f1.crud.repository.EscuderiaRepository;
 import com.f1.crud.repository.PilotoRepository;
 import com.f1.crud.service.PilotoService;
@@ -23,13 +25,16 @@ public class PilotoServiceImpl implements PilotoService {
 
     private final PilotoRepository pilotoRepository;
     private final EscuderiaRepository escuderiaRepository;
+    private final AtividadeRepository atividadeRepository;
     private final PilotoMapper pilotoMapper;
 
     public PilotoServiceImpl(PilotoRepository pilotoRepository,
                              EscuderiaRepository escuderiaRepository,
+                             AtividadeRepository atividadeRepository,
                              PilotoMapper pilotoMapper) {
         this.pilotoRepository = pilotoRepository;
         this.escuderiaRepository = escuderiaRepository;
+        this.atividadeRepository = atividadeRepository;
         this.pilotoMapper = pilotoMapper;
     }
 
@@ -44,6 +49,7 @@ public class PilotoServiceImpl implements PilotoService {
         }
 
         Piloto salvo = pilotoRepository.save(piloto);
+        atividadeRepository.save(new Atividade("PILOTO_CRIADO", "Novo piloto registrado: " + salvo.getNome()));
         return pilotoMapper.toDto(salvo);
     }
 
@@ -116,10 +122,28 @@ public class PilotoServiceImpl implements PilotoService {
 
     @Override
     @Transactional
-    public void deletar(Long id) {
+    public PilotoResponseDTO reativar(Long id) {
         if (!pilotoRepository.existsById(id)) {
             throw new NotFoundException("Piloto não encontrado com ID: " + id);
         }
+
+        pilotoRepository.reativarPorId(id);
+
+        Piloto reativado = pilotoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Erro ao carregar piloto reativado."));
+            
+        atividadeRepository.save(new Atividade("PILOTO_REATIVADO", "Piloto reativado no sistema: " + reativado.getNome()));
+
+        return pilotoMapper.toDto(reativado);
+    }
+
+    @Override
+    @Transactional
+    public void deletar(Long id) {
+        Piloto piloto = pilotoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id));
+
         pilotoRepository.deleteById(id);
+        atividadeRepository.save(new Atividade("PILOTO_DELETADO", "Piloto removido do sistema: " + piloto.getNome()));
     }
 }

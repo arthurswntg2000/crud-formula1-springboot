@@ -18,5 +18,6 @@ public interface CarroService {
     Page<CarroResponseDTO> buscarPorAno(Integer ano, Pageable pageable);
     Page<CarroResponseDTO> buscarPorMotor(String motor, Pageable pageable);
     CarroResponseDTO atualizar(Long id, CarroRequestDTO dto);
+    CarroResponseDTO reativar(Long id);
     void deletar(Long id);
 }

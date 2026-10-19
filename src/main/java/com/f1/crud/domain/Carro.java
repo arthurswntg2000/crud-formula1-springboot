@@ -1,7 +1,9 @@
-// Criado (22/09/2026)      // Atualizado (24/09/2026)
+// Criado (22/09/2026)      // Atualizações (24/09/2026); (19/10/2026)
 package com.f1.crud.domain;
 
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +13,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE carro SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Carro {
 
     @Id
@@ -32,6 +36,9 @@ public class Carro {
     private String fichaTecnica;
 
     private String urlFoto;
+
+    @Column(nullable = false)
+    private Boolean ativo = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escuderia_id")

@@ -1,4 +1,4 @@
-// Criado   (23/09/2026) ; // Atualizado (02/10/2026)
+// Criado   (23/09/2026) ; // Atualizações (02/10/2026); (19/10/2026)
 package com.f1.crud.controller;         
 
 import com.f1.crud.dto.EscuderiaRequestDTO;
@@ -59,6 +59,13 @@ public class EscuderiaController {
         @Valid 
         @RequestBody EscuderiaRequestDTO dto) {
         return ResponseEntity.ok(escuderiaService.atualizar(id, dto));
+    }
+
+    // Criado (19/10/2026)
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<EscuderiaResponseDTO> reativarEscuderia(@PathVariable Long id) {
+        EscuderiaResponseDTO dto = escuderiaService.reativar(id);
+        return ResponseEntity.ok(dto);
     }
 
     // Atualizado (02/10/2026)

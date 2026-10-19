@@ -1,11 +1,13 @@
 package com.f1.crud.service.impl;
 
+import com.f1.crud.domain.Atividade;
 import com.f1.crud.domain.Carro;
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.dto.CarroRequestDTO;
 import com.f1.crud.dto.CarroResponseDTO;
 import com.f1.crud.exception.NotFoundException;
 import com.f1.crud.mapper.CarroMapper;
+import com.f1.crud.repository.AtividadeRepository;
 import com.f1.crud.repository.CarroRepository;
 import com.f1.crud.repository.EscuderiaRepository;
 import com.f1.crud.service.CarroService;
@@ -21,13 +23,16 @@ public class CarroServiceImpl implements CarroService {
 
     private final CarroRepository carroRepository;
     private final EscuderiaRepository escuderiaRepository;
+    private final AtividadeRepository atividadeRepository;
     private final CarroMapper carroMapper;
 
     public CarroServiceImpl(CarroRepository carroRepository,
                             EscuderiaRepository escuderiaRepository,
+                            AtividadeRepository atividadeRepository,
                             CarroMapper carroMapper) {
         this.carroRepository = carroRepository;
         this.escuderiaRepository = escuderiaRepository;
+        this.atividadeRepository = atividadeRepository;
         this.carroMapper = carroMapper;
     }
 
@@ -43,6 +48,7 @@ public class CarroServiceImpl implements CarroService {
         }
 
         Carro salvo = carroRepository.save(carro);
+        atividadeRepository.save(new Atividade("CARRO_CRIADO", "Novo carro registrado: " + salvo.getModelo()));
         return carroMapper.toDto(salvo);
     }
 
@@ -112,10 +118,29 @@ public class CarroServiceImpl implements CarroService {
 
     @Override
     @Transactional
+    public CarroResponseDTO reativar(Long id) {
+        // Busca a entidade
+        Carro carro = carroRepository.findByIdIgnorandoStatus(id)
+                .orElseThrow(() -> new NotFoundException("Carro não encontrado com ID: " + id));
+
+        // Atualiza a flag diretamente na tabela
+        carroRepository.reativarPorId(id);
+        carro.setAtivo(true);
+
+        // Salva a atividade na tabela tb_atividade
+        atividadeRepository.save(new Atividade("CARRO_REATIVADO", "Carro reativado no sistema: " + carro.getModelo()));
+
+        // Retorna o DTO do carro reativado
+        return carroMapper.toDto(carro);
+    }
+
+    @Override
+    @Transactional
     public void deletar(Long id) {
-        if (!carroRepository.existsById(id)) {
-            throw new NotFoundException("Carro não encontrado com ID: " + id);
-        }
+        Carro carro = carroRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Carro não encontrado com ID: " + id));
+
         carroRepository.deleteById(id);
+        atividadeRepository.save(new Atividade("CARRO_DELETADO", "Carro removido do sistema: " + carro.getModelo()));
     }
 }

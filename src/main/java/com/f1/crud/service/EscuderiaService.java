@@ -15,5 +15,6 @@ public interface EscuderiaService {
     EscuderiaResponseDTO buscarPorId(Long id);
     Page<EscuderiaResponseDTO> buscarPorNome(String nome, Pageable pageable);
     EscuderiaResponseDTO atualizar(Long id, EscuderiaRequestDTO dto);
+    EscuderiaResponseDTO reativar(Long id);
     void deletar(Long id);
 }

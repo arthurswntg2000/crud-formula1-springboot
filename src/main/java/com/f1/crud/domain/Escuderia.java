@@ -1,6 +1,8 @@
-// criado (22/09/2026)  // Atualizado (24/09/2026)
+// criado (22/09/2026)  // Atualizações (24/09/2026)
 package com.f1.crud.domain;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -16,6 +18,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE escuderia SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Escuderia {
 
     @Id
@@ -33,6 +37,9 @@ public class Escuderia {
     private String biografia;
 
     private String urlLogo;
+
+    @Column(nullable = false)
+    private Boolean ativo = true;
 
     @OneToMany(mappedBy = "escuderia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Carro> carros = new ArrayList<>();

@@ -1,4 +1,4 @@
-// Criado (23/09/2026); Atualizado (02/10/2026)
+// Criado (23/09/2026); Atualizações (02/10/2026); (19/10/2026)
 package com.f1.crud.controller;     
 
 import com.f1.crud.dto.PilotoRequestDTO;    // criado (24/09/2026)
@@ -74,6 +74,12 @@ public class PilotoController {
         @PathVariable Long pilotoId, 
         @PathVariable Long escuderiaId) {
         return ResponseEntity.ok(pilotoService.adicionarEscuderia(pilotoId, escuderiaId));
+    }
+
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<PilotoResponseDTO> reativarPiloto(@PathVariable Long id) {
+        PilotoResponseDTO dto = pilotoService.reativar(id);
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")

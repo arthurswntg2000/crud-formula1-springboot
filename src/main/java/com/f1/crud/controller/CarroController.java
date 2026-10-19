@@ -1,4 +1,4 @@
-// Criado (24/09/2026); Atualizado (02/10/2026)
+// Criado (24/09/2026); Atualizações (02/10/2026); (19/10/2026)
 package com.f1.crud.controller;
 
 import com.f1.crud.dto.CarroRequestDTO;
@@ -57,6 +57,13 @@ public class CarroController {
         @PathVariable Long id, 
         @RequestBody CarroRequestDTO dto) {
         return ResponseEntity.ok(carroService.atualizar(id, dto));
+    }
+
+    // Criado (19/10/2026)
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<CarroResponseDTO> reativarCarro(@PathVariable Long id) {
+        CarroResponseDTO dto = carroService.reativar(id);
+        return ResponseEntity.ok(dto);
     }
 
     // Atualizado (02/10/2026)

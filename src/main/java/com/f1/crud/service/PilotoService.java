@@ -17,5 +17,6 @@ public interface PilotoService {
     Page<PilotoResponseDTO> buscarPorNacionalidade(String nacionalidade, Pageable pageable);
     PilotoResponseDTO atualizar(Long id, PilotoRequestDTO dto);
     PilotoResponseDTO adicionarEscuderia(Long pilotoId, Long escuderiaId);
+    PilotoResponseDTO reativar(Long id);
     void deletar(Long id);
 }
