@@ -1,4 +1,4 @@
-// Atualizado (25/09/2026)
+// Criado (22/09/2026); Atualizações (25/09/2026); (20/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
@@ -83,15 +83,14 @@ public class EscuderiaServiceImpl implements EscuderiaService {
     @Override
     @Transactional
     public EscuderiaResponseDTO reativar(Long id) {
-        if (!escuderiaRepository.existsById(id)) {
-            throw new NotFoundException("Escuderia não encontrada com ID: " + id);
-        }
-
+        // 1. Reativa o registro diretamente no banco via SQL nativo
         escuderiaRepository.reativarPorId(id);
 
+        // 2. Busca a escuderia (agora com ativo = true, passa sem problemas pelo Hibernate)
         Escuderia reativada = escuderiaRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Erro ao carregar escuderia reativada."));
+                .orElseThrow(() -> new NotFoundException("Escuderia não encontrada com ID: " + id));
 
+        // 3. Salva a atividade no registro
         atividadeRepository.save(new Atividade("ESCUDERIA_REATIVADA", "Escuderia reativada no sistema: " + reativada.getNome()));
 
         return escuderiaMapper.toDto(reativada);

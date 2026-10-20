@@ -1,4 +1,4 @@
-// Criado (23/09/2026)   // Atualizações (24/09/2026); (02/10/2026); (19/10/2026) 
+// Criado (23/09/2026)   // Atualizações (24/09/2026); (02/10/2026); (19/10/2026); (20/10/2026)
 package com.f1.crud.repository;    
 
 import com.f1.crud.domain.Piloto;
@@ -23,6 +23,10 @@ public interface PilotoRepository extends JpaRepository<Piloto, Long> {
     @Transactional
     @Query(value = "UPDATE tb_piloto SET ativo = true WHERE id = :id", nativeQuery = true)
     void reativarPorId(@Param("id") Long id);
+
+    // Busca JPQL que ignora o filtro soft-delete do Hibernate
+    @Query("SELECT p FROM Piloto p LEFT JOIN FETCH p.escuderias WHERE p.id = :id")
+    Optional<Piloto> findByIdIgnorandoStatus(@Param("id") Long id);
 
     // Carrega o piloto junto com suas escuderias para a tela de Perfil em 1 único SELECT
     @EntityGraph(attributePaths = {"escuderias"})

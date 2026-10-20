@@ -1,4 +1,4 @@
-// criado (22/09/2026); // Atualizações (02/10/2026); (19/10/2026)
+// criado (22/09/2026); // Atualizações (02/10/2026); (19/10/2026); (20/10/2026)
 package com.f1.crud.repository;     
 
 import com.f1.crud.domain.Carro;
@@ -26,7 +26,7 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
     void reativarPorId(@Param("id") Long id);
 
     // Busca o carro e traz a escuderia associada ignorando o filtro de ativo
-    @Query(value = "SELECT * FROM carro WHERE id = :id", nativeQuery = true)
+    @Query("SELECT c FROM Carro c LEFT JOIN FETCH c.escuderia WHERE c.id = :id")
     Optional<Carro> findByIdIgnorandoStatus(@Param("id") Long id);
 
     // Carrega o carro, sua escuderia e os pilotos dessa escuderia em 1 único SELECT

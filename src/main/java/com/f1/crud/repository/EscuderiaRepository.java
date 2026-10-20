@@ -1,4 +1,4 @@
-// Criado (23/09/2026) ;  Atualizações (02/10/2026); (19/10/2026)
+// Criado (23/09/2026) ;  Atualizações (02/10/2026); (19/10/2026); (20/10/2026)
 package com.f1.crud.repository;    
 
 import com.f1.crud.domain.Escuderia;
@@ -23,6 +23,10 @@ public interface EscuderiaRepository extends JpaRepository<Escuderia, Long> {
     @Transactional
     @Query(value = "UPDATE escuderia SET ativo = true WHERE id = :id", nativeQuery = true)
     void reativarPorId(@Param("id") Long id);
+
+    // Busca JPQL que ignora a restrição do soft-delete do Hibernate
+    @Query("SELECT e FROM Escuderia e LEFT JOIN FETCH e.pilotos LEFT JOIN FETCH e.carros WHERE e.id = :id")
+    Optional<Escuderia> findByIdIgnorandoStatus(@Param("id") Long id);
 
     // Carrega a escuderia com seus pilotos e carros vinculados para a tela de Perfil
     @EntityGraph(attributePaths = {"pilotos", "carros"})

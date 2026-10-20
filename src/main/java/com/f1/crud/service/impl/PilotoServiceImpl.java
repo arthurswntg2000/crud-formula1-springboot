@@ -1,4 +1,4 @@
-// Atualizado (25/09/2026)
+// Atualizado (25/09/2026); (20/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
@@ -123,15 +123,14 @@ public class PilotoServiceImpl implements PilotoService {
     @Override
     @Transactional
     public PilotoResponseDTO reativar(Long id) {
-        if (!pilotoRepository.existsById(id)) {
-            throw new NotFoundException("Piloto não encontrado com ID: " + id);
-        }
-
+        // 1. Executa o UPDATE nativo no PostgreSQL (muda 'ativo' para true antes da busca)
         pilotoRepository.reativarPorId(id);
 
+        // 2. Busca o piloto reativado (com ativo = true, passa normalmente pelo filtro do Hibernate)
         Piloto reativado = pilotoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Erro ao carregar piloto reativado."));
-            
+                .orElseThrow(() -> new NotFoundException("Piloto não encontrado com ID: " + id));
+
+        // 3. Regista o log de atividade na tabela tb_atividade para ser exibido no Dashboard
         atividadeRepository.save(new Atividade("PILOTO_REATIVADO", "Piloto reativado no sistema: " + reativado.getNome()));
 
         return pilotoMapper.toDto(reativado);

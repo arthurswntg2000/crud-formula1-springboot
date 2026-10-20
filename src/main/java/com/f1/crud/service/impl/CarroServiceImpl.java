@@ -1,3 +1,4 @@
+// Criado (22/09/2026); Atualizações (20/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
@@ -119,19 +120,17 @@ public class CarroServiceImpl implements CarroService {
     @Override
     @Transactional
     public CarroResponseDTO reativar(Long id) {
-        // Busca a entidade
-        Carro carro = carroRepository.findByIdIgnorandoStatus(id)
+        // 1. Reativa o registro diretamente na tabela PostgreSQL (evita a barra do soft-delete)
+        carroRepository.reativarPorId(id);
+
+        // 2. Agora que 'ativo = true', o findById encontra o objeto normalmente
+        Carro reativado = carroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Carro não encontrado com ID: " + id));
 
-        // Atualiza a flag diretamente na tabela
-        carroRepository.reativarPorId(id);
-        carro.setAtivo(true);
+        // 3. Regista a atividade para o Dashboard
+        atividadeRepository.save(new Atividade("CARRO_REATIVADO", "Carro reativado no sistema: " + reativado.getModelo()));
 
-        // Salva a atividade na tabela tb_atividade
-        atividadeRepository.save(new Atividade("CARRO_REATIVADO", "Carro reativado no sistema: " + carro.getModelo()));
-
-        // Retorna o DTO do carro reativado
-        return carroMapper.toDto(carro);
+        return carroMapper.toDto(reativado);
     }
 
     @Override
