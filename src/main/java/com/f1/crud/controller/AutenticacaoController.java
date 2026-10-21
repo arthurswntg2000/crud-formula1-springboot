@@ -1,8 +1,9 @@
-// Criado (28/09/2026); Atualizações (09/10/2026)
+// Criado (28/09/2026); Atualizações (09/10/2026); (21/10/2026)
 package com.f1.crud.controller;
 
 import com.f1.crud.domain.Usuario;
 import com.f1.crud.dto.LoginDTO;
+import com.f1.crud.dto.RedefinirSenhaDTO;
 import com.f1.crud.dto.RegistroDTO;
 import com.f1.crud.dto.TokenResponseDTO;
 import com.f1.crud.dto.UsuarioResponseDTO;
@@ -14,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class AutenticacaoController {
 
     @Autowired
@@ -52,6 +56,13 @@ public class AutenticacaoController {
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@RequestBody @Valid RegistroDTO dto) {
         usuarioService.registrar(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    // Criado (21/10/2026)
+    @PutMapping("/redefinir-senha")
+    public ResponseEntity<Void> redefinirSenha(@RequestBody @Valid RedefinirSenhaDTO dto) {
+        usuarioService.redefinirSenha(dto);
         return ResponseEntity.ok().build();
     }
 

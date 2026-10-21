@@ -2,6 +2,7 @@
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Usuario;
+import com.f1.crud.dto.RedefinirSenhaDTO;
 import com.f1.crud.dto.RegistroDTO;
 import com.f1.crud.dto.UsuarioResponseDTO;
 import com.f1.crud.exception.NotFoundException;
@@ -38,6 +39,22 @@ public class UsuarioServiceImpl implements UsuarioService {
         novoUsuario.setPassword(senhaCriptografada);
 
         usuarioRepository.save(novoUsuario);
+    }
+
+    // Criado (21/10/2026)
+    @Override
+    @Transactional
+    public void redefinirSenha(RedefinirSenhaDTO dto) {
+        Usuario usuario = (Usuario) usuarioRepository.findByLogin(dto.login());
+                
+        if (usuario == null) {
+            throw new NotFoundException("Usuário não encontrado com o login: " + dto.login());
+        }
+
+        String senhaCriptografada = passwordEncoder.encode(dto.novaSenha());
+        usuario.setPassword(senhaCriptografada);
+
+        usuarioRepository.save(usuario);
     }
 
     @Override
