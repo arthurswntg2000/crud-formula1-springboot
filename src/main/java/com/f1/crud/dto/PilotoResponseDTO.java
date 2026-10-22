@@ -1,4 +1,4 @@
-// Criado (24/09/2026); Atualizações (06/10/2026)
+// Criado (24/09/2026); Atualizações (06/10/2026); (22/10/2026)
 package com.f1.crud.dto;
 
 import java.time.LocalDate;
@@ -14,5 +14,5 @@ public record PilotoResponseDTO(
     String status,
     String biografia,
     String urlFoto,
-    Set<String> nomesEscuderias // Lista/Conjunto com os nomes de todas as escuderias do piloto
+    Set<EscuderiaResponseDTO> escuderias
 ) {}
