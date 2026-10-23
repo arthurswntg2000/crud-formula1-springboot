@@ -1,7 +1,8 @@
-// criado (24/09/2026); Atualizações (06/10/2026)
+// criado (24/09/2026); Atualizações (06/10/2026); (23/10/2026)
 package com.f1.crud.dto;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record EscuderiaResponseDTO(
     Long id,
@@ -11,5 +12,7 @@ public record EscuderiaResponseDTO(
     String fundador,
     Integer titulos,
     String biografia,
-    String urlLogo
+    String urlLogo,
+    Set<PilotoResponseDTO> pilotos,
+    Set<CarroResumoDTO> carros
 ) {}

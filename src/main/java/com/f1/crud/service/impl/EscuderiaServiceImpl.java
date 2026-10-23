@@ -2,32 +2,43 @@
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
+import com.f1.crud.domain.Carro;
 import com.f1.crud.domain.Escuderia;
+import com.f1.crud.domain.Piloto;
 import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.dto.EscuderiaResponseDTO;
 import com.f1.crud.exception.NotFoundException;
 import com.f1.crud.mapper.EscuderiaMapper;
 import com.f1.crud.repository.AtividadeRepository;
+import com.f1.crud.repository.CarroRepository;
 import com.f1.crud.repository.EscuderiaRepository;
+import com.f1.crud.repository.PilotoRepository;
 import com.f1.crud.service.EscuderiaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class EscuderiaServiceImpl implements EscuderiaService {
 
     private final EscuderiaRepository escuderiaRepository;
+    private final PilotoRepository pilotoRepository;
+    private final CarroRepository carroRepository;
     private final AtividadeRepository atividadeRepository;
     private final EscuderiaMapper escuderiaMapper;
 
-    public EscuderiaServiceImpl(EscuderiaRepository escuderiaRepository, 
+    public EscuderiaServiceImpl(EscuderiaRepository escuderiaRepository,
+                                PilotoRepository pilotoRepository,
+                                CarroRepository carroRepository,
                                 AtividadeRepository atividadeRepository, 
                                 EscuderiaMapper escuderiaMapper) {
         this.escuderiaRepository = escuderiaRepository;
+        this.pilotoRepository = pilotoRepository;
+        this.carroRepository = carroRepository;
         this.atividadeRepository = atividadeRepository;
         this.escuderiaMapper = escuderiaMapper;
     }
@@ -36,6 +47,17 @@ public class EscuderiaServiceImpl implements EscuderiaService {
     @Transactional
     public EscuderiaResponseDTO criar(EscuderiaRequestDTO dto) {
         Escuderia escuderia = escuderiaMapper.toEntity(dto);
+
+        if (dto.pilotoIds() != null && !dto.pilotoIds().isEmpty()) {
+            List<Piloto> pilotos = pilotoRepository.findAllById(dto.pilotoIds());
+            escuderia.setPilotos(new HashSet<>(pilotos));
+        }
+
+        if (dto.carroIds() != null && !dto.carroIds().isEmpty()) {
+            List<Carro> carros = carroRepository.findAllById(dto.carroIds());
+            escuderia.setCarros(carros);
+        }
+
         Escuderia salva = escuderiaRepository.save(escuderia);
         atividadeRepository.save(new Atividade("ESCUDERIA_CRIADA", "Nova escuderia registrada: " + salva.getNome()));
         return escuderiaMapper.toDto(salva);
@@ -61,7 +83,6 @@ public class EscuderiaServiceImpl implements EscuderiaService {
         return escuderiaMapper.toDto(escuderia);
     }
 
-    // criado (02/10/2026)
     @Override
     @Transactional(readOnly = true)
     public Page<EscuderiaResponseDTO> buscarPorNome(String nome, Pageable pageable) {
@@ -76,6 +97,26 @@ public class EscuderiaServiceImpl implements EscuderiaService {
 
         escuderiaMapper.updateEntityFromDto(dto, escuderiaExistente);
 
+        // Associa os Pilotos Selecionados
+        if (dto.pilotoIds() != null) {
+            List<Piloto> pilotos = pilotoRepository.findAllById(dto.pilotoIds());
+            escuderiaExistente.setPilotos(new HashSet<>(pilotos));
+
+            for (Piloto p : pilotos) {
+                p.getEscuderias().add(escuderiaExistente);
+            }
+        }
+
+        // Associa os Carros Selecionados
+        if (dto.carroIds() != null) {
+            List<Carro> carros = carroRepository.findAllById(dto.carroIds());
+            escuderiaExistente.setCarros(carros);
+
+            for (Carro c : carros) {
+                c.setEscuderia(escuderiaExistente);
+            }
+        }
+
         Escuderia atualizada = escuderiaRepository.save(escuderiaExistente);
         return escuderiaMapper.toDto(atualizada);
     }
@@ -83,14 +124,11 @@ public class EscuderiaServiceImpl implements EscuderiaService {
     @Override
     @Transactional
     public EscuderiaResponseDTO reativar(Long id) {
-        // 1. Reativa o registro diretamente no banco via SQL nativo
         escuderiaRepository.reativarPorId(id);
 
-        // 2. Busca a escuderia (agora com ativo = true, passa sem problemas pelo Hibernate)
         Escuderia reativada = escuderiaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada com ID: " + id));
 
-        // 3. Salva a atividade no registro
         atividadeRepository.save(new Atividade("ESCUDERIA_REATIVADA", "Escuderia reativada no sistema: " + reativada.getNome()));
 
         return escuderiaMapper.toDto(reativada);
