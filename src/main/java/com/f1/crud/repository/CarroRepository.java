@@ -1,4 +1,4 @@
-// criado (22/09/2026); // Atualizações (02/10/2026); (19/10/2026); (20/10/2026)
+// criado (22/09/2026); // Atualizações (02/10/2026); (19/10/2026); (20/10/2026); (27/10/2026)
 package com.f1.crud.repository;     
 
 import com.f1.crud.domain.Carro;
@@ -12,13 +12,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Repository
 public interface CarroRepository extends JpaRepository<Carro, Long> {
 
-    // Criado em (19/10/2026)
+    // Busca carros associados a uma escuderia pelo ID da escuderia
+    @Query("SELECT c FROM Carro c WHERE c.escuderia.id = :escuderiaId")
+    List<Carro> findByEscuderiaId(@Param("escuderiaId") Long escuderiaId);
+
     // Método para reativar um carro inativado pelo Soft Delete
     @Modifying
     @Transactional
@@ -46,7 +50,6 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
     @Query("SELECT c FROM Carro c WHERE LOWER(c.motor) LIKE LOWER(CONCAT('%', :motor, '%'))")
     Page<Carro> buscarPorMotor(@Param("motor") String motor, Pageable pageable);
 }
-
 
 
 

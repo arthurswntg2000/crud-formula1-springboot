@@ -39,8 +39,8 @@ public interface PilotoMapper {
                         e.getDataFundacao(),
                         e.getFundador(),
                         e.getTitulos(),
-                        e.getBiografia(),
                         e.getUrlLogo(),
+                        e.getBiografia(),
                         null, // evita recursão infinita ao mapear os pilotos dentro da escuderia do piloto
                         null
                 ))

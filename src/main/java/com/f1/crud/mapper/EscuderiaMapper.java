@@ -4,7 +4,7 @@ package com.f1.crud.mapper;
 import com.f1.crud.domain.Carro;
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.domain.Piloto;
-import com.f1.crud.dto.CarroResumoDTO;
+import com.f1.crud.dto.CarroResponseDTO;
 import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.dto.EscuderiaResponseDTO;
 import com.f1.crud.dto.PilotoResponseDTO;
@@ -23,7 +23,7 @@ public interface EscuderiaMapper {
     Escuderia toEntity(EscuderiaRequestDTO dto);
 
     @Mapping(target = "pilotos", expression = "java(mapPilotosToDtos(escuderia.getPilotos()))")
-    @Mapping(target = "carros", expression = "java(mapCarrosToResumoDtos(escuderia.getCarros()))")
+    @Mapping(target = "carros", expression = "java(mapCarrosToDtos(escuderia.getCarros()))")
     EscuderiaResponseDTO toDto(Escuderia escuderia);
 
     List<EscuderiaResponseDTO> toDtoList(List<Escuderia> escuderias);
@@ -33,7 +33,7 @@ public interface EscuderiaMapper {
     @Mapping(target = "carros", ignore = true)
     void updateEntityFromDto(EscuderiaRequestDTO dto, @MappingTarget Escuderia escuderia);
 
-    // Mapeamento manual de Pilotos sem recursão
+    // Mapeamento manual de Pilotos
     default Set<PilotoResponseDTO> mapPilotosToDtos(Set<Piloto> pilotos) {
         if (pilotos == null) return null;
         return pilotos.stream()
@@ -47,21 +47,24 @@ public interface EscuderiaMapper {
                         p.getStatus(),
                         p.getBiografia(),
                         p.getUrlFoto(),
-                        null // Apenas passe o argumento null diretamente
+                        null
                 ))
                 .collect(Collectors.toSet());
     }
 
-    // Mapeamento manual de Carros para CarroResumoDTO com os 5 parâmetros requeridos pelo Record
-    default Set<CarroResumoDTO> mapCarrosToResumoDtos(List<Carro> carros) {
+    // Mapeamento manual de Carros para CarroResponseDTO
+    default Set<CarroResponseDTO> mapCarrosToDtos(List<Carro> carros) {
         if (carros == null) return null;
         return carros.stream()
-                .map(c -> new CarroResumoDTO(
+                .map(c -> new CarroResponseDTO(
                         c.getId(),
                         c.getModelo(),
                         c.getMotor(),
                         c.getAno(),
-                        c.getUrlFoto() // ou null/c.getEscuderia().getNome()
+                        c.getUrlFoto(),
+                        c.getFichaTecnica(),
+                        c.getEscuderia() != null ? c.getEscuderia().getNome() : null,
+                        null
                 ))
                 .collect(Collectors.toSet());
     }

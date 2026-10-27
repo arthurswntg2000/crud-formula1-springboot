@@ -3,20 +3,15 @@ package com.f1.crud.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.util.Set;
 
 public record CarroRequestDTO(
-    @NotBlank(message = "O modelo é obrigatório") 
-    String modelo,
-    
+    @NotBlank String modelo,
     String motor,
-    
-    @NotNull(message = "O ano é obrigatório") 
-    Integer ano,
-    
-    @Size(max = 2000, message = "A ficha técnica deve ter no máximo 2000 caracteres") 
-    String fichaTecnica,
-    
+    @NotNull Integer ano,
+    Long escuderiaId,
+    Set<Long> pilotoIds,
     String urlFoto,
-    Long escuderiaId
+    String fotoUrl,
+    String fichaTecnica
 ) {}

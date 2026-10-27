@@ -1,4 +1,4 @@
-// Criado (22/09/2026)      // Atualizações (24/09/2026); (19/10/2026)
+// Criado (22/09/2026)      // Atualizações (24/09/2026); (19/10/2026); (27/10/2026)
 package com.f1.crud.domain;
 
 import org.hibernate.annotations.Formula;
@@ -6,6 +6,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "carro")
@@ -43,4 +46,13 @@ public class Carro {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "escuderia_id")
     private Escuderia escuderia;
+
+    // Relacionamento com os Pilotos
+    @ManyToMany
+    @JoinTable(
+        name = "tb_carro_piloto",
+        joinColumns = @JoinColumn(name = "carro_id"),
+        inverseJoinColumns = @JoinColumn(name = "piloto_id")
+    )
+    private List<Piloto> pilotos = new ArrayList<>();
 }

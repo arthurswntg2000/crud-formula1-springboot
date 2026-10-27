@@ -1,14 +1,18 @@
-// Criado (22/09/2026); Atualizações (25/09/2026); (20/10/2026)
+// Criado (22/09/2026); Atualizações (25/09/2026); (20/10/2026); (27/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
 import com.f1.crud.domain.Carro;
 import com.f1.crud.domain.Escuderia;
 import com.f1.crud.domain.Piloto;
+import com.f1.crud.dto.CarroResponseDTO;
 import com.f1.crud.dto.EscuderiaRequestDTO;
 import com.f1.crud.dto.EscuderiaResponseDTO;
+import com.f1.crud.dto.PilotoResponseDTO;
 import com.f1.crud.exception.NotFoundException;
+import com.f1.crud.mapper.CarroMapper;
 import com.f1.crud.mapper.EscuderiaMapper;
+import com.f1.crud.mapper.PilotoMapper;
 import com.f1.crud.repository.AtividadeRepository;
 import com.f1.crud.repository.CarroRepository;
 import com.f1.crud.repository.EscuderiaRepository;
@@ -21,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EscuderiaServiceImpl implements EscuderiaService {
@@ -30,37 +36,49 @@ public class EscuderiaServiceImpl implements EscuderiaService {
     private final CarroRepository carroRepository;
     private final AtividadeRepository atividadeRepository;
     private final EscuderiaMapper escuderiaMapper;
+    private final CarroMapper carroMapper;
+    private final PilotoMapper pilotoMapper;
 
     public EscuderiaServiceImpl(EscuderiaRepository escuderiaRepository,
                                 PilotoRepository pilotoRepository,
                                 CarroRepository carroRepository,
                                 AtividadeRepository atividadeRepository, 
-                                EscuderiaMapper escuderiaMapper) {
+                                EscuderiaMapper escuderiaMapper,
+                                CarroMapper carroMapper,
+                                PilotoMapper pilotoMapper) {
         this.escuderiaRepository = escuderiaRepository;
         this.pilotoRepository = pilotoRepository;
         this.carroRepository = carroRepository;
         this.atividadeRepository = atividadeRepository;
         this.escuderiaMapper = escuderiaMapper;
+        this.carroMapper = carroMapper;
+        this.pilotoMapper = pilotoMapper;
     }
 
     @Override
     @Transactional
     public EscuderiaResponseDTO criar(EscuderiaRequestDTO dto) {
         Escuderia escuderia = escuderiaMapper.toEntity(dto);
+        Escuderia salva = escuderiaRepository.save(escuderia);
 
         if (dto.pilotoIds() != null && !dto.pilotoIds().isEmpty()) {
             List<Piloto> pilotos = pilotoRepository.findAllById(dto.pilotoIds());
-            escuderia.setPilotos(new HashSet<>(pilotos));
+            for (Piloto p : pilotos) {
+                p.getEscuderias().add(salva);
+            }
+            pilotoRepository.saveAll(pilotos);
         }
 
         if (dto.carroIds() != null && !dto.carroIds().isEmpty()) {
             List<Carro> carros = carroRepository.findAllById(dto.carroIds());
-            escuderia.setCarros(carros);
+            for (Carro c : carros) {
+                c.setEscuderia(salva);
+            }
+            carroRepository.saveAll(carros);
         }
 
-        Escuderia salva = escuderiaRepository.save(escuderia);
         atividadeRepository.save(new Atividade("ESCUDERIA_CRIADA", "Nova escuderia registrada: " + salva.getNome()));
-        return escuderiaMapper.toDto(salva);
+        return buscarPorId(salva.getId());
     }
 
     @Override
@@ -80,7 +98,33 @@ public class EscuderiaServiceImpl implements EscuderiaService {
     public EscuderiaResponseDTO buscarPorId(Long id) {
         Escuderia escuderia = escuderiaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada com ID: " + id));
-        return escuderiaMapper.toDto(escuderia);
+
+        // Busca os carros e pilotos associados a esta escuderia
+        List<Carro> carros = carroRepository.findByEscuderiaId(id);
+        Set<CarroResponseDTO> carroDtos = carros.stream()
+                .map(carroMapper::toDto)
+                .collect(Collectors.toSet());
+
+        List<Piloto> pilotos = pilotoRepository.findByEscuderiaId(id);
+        Set<PilotoResponseDTO> pilotoDtos = pilotos.stream()
+                .map(pilotoMapper::toDto)
+                .collect(Collectors.toSet());
+
+        EscuderiaResponseDTO dtoBase = escuderiaMapper.toDto(escuderia);
+
+        // Ordem exata: fundador (String) antes de titulos (Integer)
+        return new EscuderiaResponseDTO(
+                dtoBase.id(),
+                dtoBase.nome(),
+                dtoBase.paisOrigem(),
+                dtoBase.dataFundacao(),
+                dtoBase.fundador(),   // String
+                dtoBase.titulos(),    // Integer
+                dtoBase.urlLogo(),
+                dtoBase.biografia(),
+                carroDtos,
+                pilotoDtos
+        );
     }
 
     @Override
@@ -96,29 +140,32 @@ public class EscuderiaServiceImpl implements EscuderiaService {
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada com ID: " + id));
 
         escuderiaMapper.updateEntityFromDto(dto, escuderiaExistente);
+        Escuderia atualizada = escuderiaRepository.save(escuderiaExistente);
 
-        // Associa os Pilotos Selecionados
+        // Associa os Pilotos
         if (dto.pilotoIds() != null) {
             List<Piloto> pilotos = pilotoRepository.findAllById(dto.pilotoIds());
-            escuderiaExistente.setPilotos(new HashSet<>(pilotos));
-
             for (Piloto p : pilotos) {
-                p.getEscuderias().add(escuderiaExistente);
+                if (!p.getEscuderias().contains(atualizada)) {
+                    p.getEscuderias().add(atualizada);
+                }
             }
+            pilotoRepository.saveAll(pilotos);
         }
 
-        // Associa os Carros Selecionados
+        // Associa os Carros
         if (dto.carroIds() != null) {
             List<Carro> carros = carroRepository.findAllById(dto.carroIds());
-            escuderiaExistente.setCarros(carros);
-
             for (Carro c : carros) {
-                c.setEscuderia(escuderiaExistente);
+                c.setEscuderia(atualizada);
             }
+            carroRepository.saveAll(carros);
         }
 
-        Escuderia atualizada = escuderiaRepository.save(escuderiaExistente);
-        return escuderiaMapper.toDto(atualizada);
+        atividadeRepository.save(new Atividade("ESCUDERIA_ATUALIZADA", "Escuderia atualizada: " + atualizada.getNome()));
+    
+        // Retorna o DTO com os carros e pilotos montados
+        return buscarPorId(atualizada.getId());
     }
 
     @Override

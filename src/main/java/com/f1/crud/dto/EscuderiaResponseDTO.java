@@ -11,8 +11,8 @@ public record EscuderiaResponseDTO(
     LocalDate dataFundacao,
     String fundador,
     Integer titulos,
-    String biografia,
     String urlLogo,
-    Set<PilotoResponseDTO> pilotos,
-    Set<CarroResumoDTO> carros
+    String biografia,
+    Set<CarroResponseDTO> carros,
+    Set<PilotoResponseDTO> pilotos
 ) {}
