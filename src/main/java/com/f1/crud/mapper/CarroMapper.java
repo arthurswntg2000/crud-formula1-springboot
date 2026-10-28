@@ -17,7 +17,7 @@ public interface CarroMapper {
     Carro toEntity(CarroRequestDTO dto);
 
     @Mapping(target = "nomeEscuderia", source = "escuderia.nome")
-    
+    @Mapping(target = "escuderiaId", source = "escuderia.id")
     CarroResponseDTO toDto(Carro carro);
 
     List<CarroResponseDTO> toDtoList(List<Carro> carros);

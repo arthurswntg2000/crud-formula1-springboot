@@ -1,4 +1,4 @@
-// Criado (24/09/2026); Atualizações (02/10/2026); (23/10/2026)
+// Criado (24/09/2026); Atualizações (02/10/2026); (23/10/2026); (28/10/2026)
 package com.f1.crud.mapper;
 
 import com.f1.crud.domain.Carro;
@@ -50,7 +50,7 @@ public interface EscuderiaMapper {
                         null
                 ))
                 .collect(Collectors.toSet());
-    }
+        }
 
     // Mapeamento manual de Carros para CarroResponseDTO
     default Set<CarroResponseDTO> mapCarrosToDtos(List<Carro> carros) {
@@ -64,8 +64,16 @@ public interface EscuderiaMapper {
                         c.getUrlFoto(),
                         c.getFichaTecnica(),
                         c.getEscuderia() != null ? c.getEscuderia().getNome() : null,
-                        null
+                        c.getEscuderia() != null ? c.getEscuderia().getId() : null, // escuderiaId
+                        c.getPilotos() != null ? c.getPilotos().stream()
+                                .map(p -> new PilotoResponseDTO(
+                                        p.getId(), p.getNome(), p.getNacionalidade(),
+                                        p.getNumeroCarro(), p.getDataNascimento(),
+                                        p.getTitulos(), p.getStatus(), p.getBiografia(),
+                                        p.getUrlFoto(), null
+                                ))
+                                .collect(Collectors.toSet()) : null // pilotos do carro
                 ))
                 .collect(Collectors.toSet());
-    }
+        }
 }

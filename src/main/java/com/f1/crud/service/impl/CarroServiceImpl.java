@@ -1,4 +1,4 @@
-// Criado (22/09/2026); Atualizações (20/10/2026); (27/10/2026)
+// Criado (22/09/2026); Atualizações (20/10/2026); (27/10/2026); (28/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
@@ -127,15 +127,16 @@ public class CarroServiceImpl implements CarroService {
 
         // Retorna o DTO do carro com a coleção de pilotos devidamente preenchida
         return new CarroResponseDTO(
-                dtoBase.id(),
-                dtoBase.modelo(),
-                dtoBase.motor(),
-                dtoBase.ano(),
-                dtoBase.urlFoto(),
-                dtoBase.fichaTecnica(),
-                dtoBase.nomeEscuderia(),
-                pilotoDtos
-        );
+            carro.getId(),
+            carro.getModelo(),
+            carro.getMotor(),
+            carro.getAno(),
+            carro.getUrlFoto(),
+            carro.getFichaTecnica(),
+            carro.getNomeEscuderia(),
+            carro.getEscuderia() != null ? carro.getEscuderia().getId() : null,
+            carro.getPilotos() != null ? new java.util.HashSet<>(pilotoMapper.toDtoList(carro.getPilotos())) : null
+);
     }
 
     @Override
@@ -144,7 +145,7 @@ public class CarroServiceImpl implements CarroService {
         Carro carroExistente = carroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Carro não encontrado com ID: " + id));
 
-        // Atualiza os campos básicos do carro
+        // Atualiza os campos básicos do carro (modelo, motor, ano, etc.)
         carroMapper.updateEntityFromDto(dto, carroExistente);
 
         // Trata a Escuderia Vinculada
@@ -156,9 +157,8 @@ public class CarroServiceImpl implements CarroService {
             carroExistente.setEscuderia(null);
         }
 
-        // SINCRONIZAÇÃO DE PILOTOS: Se a lista de IDs vier preenchida, associa os novos. Se vier vazia/nula, limpa tudo!
+        // Sincronização limpa e exata dos pilotos do carro
         carroExistente.getPilotos().clear();
-        
         if (dto.pilotoIds() != null && !dto.pilotoIds().isEmpty()) {
             List<Piloto> novosPilotos = pilotoRepository.findAllById(dto.pilotoIds());
             carroExistente.getPilotos().addAll(novosPilotos);

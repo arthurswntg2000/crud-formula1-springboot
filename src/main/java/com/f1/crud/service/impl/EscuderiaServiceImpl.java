@@ -1,4 +1,4 @@
-// Criado (22/09/2026); Atualizações (25/09/2026); (20/10/2026); (27/10/2026)
+// Criado (22/09/2026); Atualizações (25/09/2026); (20/10/2026); (27/10/2026); (28/10/2026)
 package com.f1.crud.service.impl;
 
 import com.f1.crud.domain.Atividade;
@@ -139,32 +139,42 @@ public class EscuderiaServiceImpl implements EscuderiaService {
         Escuderia escuderiaExistente = escuderiaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Escuderia não encontrada com ID: " + id));
 
+        // Remove a escuderia de todos os pilotos antigos que a possuíam
+        List<Piloto> pilotosAntigos = pilotoRepository.findByEscuderiaId(id);
+        for (Piloto p : pilotosAntigos) {
+            p.getEscuderias().remove(escuderiaExistente);
+        }
+        pilotoRepository.saveAll(pilotosAntigos);
+
+        // Atualiza os campos básicos da escuderia
         escuderiaMapper.updateEntityFromDto(dto, escuderiaExistente);
         Escuderia atualizada = escuderiaRepository.save(escuderiaExistente);
 
-        // Associa os Pilotos
-        if (dto.pilotoIds() != null) {
-            List<Piloto> pilotos = pilotoRepository.findAllById(dto.pilotoIds());
-            for (Piloto p : pilotos) {
-                if (!p.getEscuderias().contains(atualizada)) {
-                    p.getEscuderias().add(atualizada);
-                }
+        // Adiciona os novos pilotos selecionados (vinculando dos dois lados)
+        if (dto.pilotoIds() != null && !dto.pilotoIds().isEmpty()) {
+            List<Piloto> novosPilotos = pilotoRepository.findAllById(dto.pilotoIds());
+            for (Piloto p : novosPilotos) {
+                p.getEscuderias().add(atualizada);
             }
-            pilotoRepository.saveAll(pilotos);
+            pilotoRepository.saveAll(novosPilotos);
         }
 
-        // Associa os Carros
-        if (dto.carroIds() != null) {
-            List<Carro> carros = carroRepository.findAllById(dto.carroIds());
-            for (Carro c : carros) {
+        // Sincroniza os carros (se houver IDs de carros no DTO)
+        List<Carro> carrosAntigos = carroRepository.findByEscuderiaId(id);
+        for (Carro c : carrosAntigos) {
+            c.setEscuderia(null);
+        }
+        carroRepository.saveAll(carrosAntigos);
+
+        if (dto.carroIds() != null && !dto.carroIds().isEmpty()) {
+            List<Carro> novosCarros = carroRepository.findAllById(dto.carroIds());
+            for (Carro c : novosCarros) {
                 c.setEscuderia(atualizada);
             }
-            carroRepository.saveAll(carros);
+            carroRepository.saveAll(novosCarros);
         }
 
         atividadeRepository.save(new Atividade("ESCUDERIA_ATUALIZADA", "Escuderia atualizada: " + atualizada.getNome()));
-    
-        // Retorna o DTO com os carros e pilotos montados
         return buscarPorId(atualizada.getId());
     }
 
